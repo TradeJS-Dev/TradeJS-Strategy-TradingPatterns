@@ -1,4 +1,8 @@
 import { mapAiRuntimeFromConfig } from "@tradejs/core/strategies";
+import {
+  getAiPayloadNumber,
+  withStrategyLocalAiGate,
+} from "@tradejs/strategy-kit/ai-gate";
 import type { AiPayload, Signal, StrategyAiAdapter } from "@tradejs/types";
 import type { TradingPatternsConfig } from "./config";
 import { patternDefinitionByName, type TradingPatternName } from "./patterns";
@@ -34,6 +38,32 @@ const getSourceAdapter = ({
         .aiAdapter
     : undefined;
 };
+
+const shortReplacementGate = withStrategyLocalAiGate(
+  {},
+  {
+    id: "trading_patterns_short_near_support_nonbull_stack_2026_09_14",
+    approves: ({ signal, payload }) => {
+      if (signal.direction !== "SHORT") return false;
+
+      const nearestSupportDistanceAtr = getAiPayloadNumber(
+        payload,
+        "additionalIndicators.baseContext.structure.srZones.nearestSupport.distanceAtr",
+      );
+      const maStackScore = getAiPayloadNumber(
+        payload,
+        "additionalIndicators.baseContext.regime.trend.maStackScore",
+      );
+
+      return (
+        nearestSupportDistanceAtr != null &&
+        nearestSupportDistanceAtr <= 0.743157 &&
+        maStackScore != null &&
+        maStackScore <= 0
+      );
+    },
+  },
+);
 
 export const tradingPatternsAiAdapter: StrategyAiAdapter = {
   buildPayload: ({ signal, basePayload }) => {
@@ -75,12 +105,25 @@ ${sourceAddon}
       payload,
       analysis,
     }) ?? analysis,
-  postProcessLocalAnalysis: ({ signal, payload, analysis }) =>
-    getSourceAdapter({ signal, payload })?.postProcessLocalAnalysis?.({
-      signal,
-      payload,
-      analysis,
-    }) ?? analysis,
+  postProcessLocalAnalysis: ({ signal, payload, analysis }) => {
+    if (signal.direction === "SHORT") {
+      return (
+        shortReplacementGate.postProcessLocalAnalysis?.({
+          signal,
+          payload,
+          analysis,
+        }) ?? analysis
+      );
+    }
+
+    return (
+      getSourceAdapter({ signal, payload })?.postProcessLocalAnalysis?.({
+        signal,
+        payload,
+        analysis,
+      }) ?? analysis
+    );
+  },
   mapEntryRuntimeFromConfig: (config) =>
     mapAiRuntimeFromConfig(
       config as Pick<

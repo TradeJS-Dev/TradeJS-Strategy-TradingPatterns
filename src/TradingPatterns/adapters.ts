@@ -42,7 +42,7 @@ const getSourceAdapter = ({
 const shortReplacementGate = withStrategyLocalAiGate(
   {},
   {
-    id: "trading_patterns_short_near_support_nonbull_stack_2026_09_14",
+    id: "trading_patterns_short_near_support_070_nonbull_stack_2026_09_14",
     approves: ({ signal, payload }) => {
       if (signal.direction !== "SHORT") return false;
 
@@ -57,7 +57,7 @@ const shortReplacementGate = withStrategyLocalAiGate(
 
       return (
         nearestSupportDistanceAtr != null &&
-        nearestSupportDistanceAtr <= 0.743157 &&
+        nearestSupportDistanceAtr <= 0.7 &&
         maStackScore != null &&
         maStackScore <= 0
       );

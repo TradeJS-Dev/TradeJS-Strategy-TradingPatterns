@@ -69,7 +69,7 @@ describe("TradingPatterns AI adapter", () => {
       }),
     );
     expect((result as any).qualityReason).toContain(
-      "trading_patterns_short_near_support_nonbull_stack_2026_09_14",
+      "trading_patterns_short_near_support_070_nonbull_stack_2026_09_14",
     );
   });
 

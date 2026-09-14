@@ -3,6 +3,7 @@ export {
   parseTradingPatternsConfig,
 } from "./config";
 export type {
+  TradingPatternDirectionConfig,
   TradingPatternToggle,
   TradingPatternToggles,
   TradingPatternsConfig,

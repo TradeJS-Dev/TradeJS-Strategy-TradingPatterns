@@ -1,10 +1,11 @@
 import { StrategyConfigValidationError } from "@tradejs/strategy-kit/config";
 import {
+  buildChildConfig,
   config,
   parseTradingPatternsConfig,
   type TradingPatternsConfig,
 } from "../config";
-import { PATTERN_NAMES } from "../patterns";
+import { PATTERN_NAMES, patternDefinitionByName } from "../patterns";
 
 describe("TradingPatterns config", () => {
   it("defaults to one hour and includes every supported pattern", () => {
@@ -14,6 +15,22 @@ describe("TradingPatterns config", () => {
     expect(parsed.INTERVAL).toBe("60");
     expect(parsed.TRADING_PATTERNS_PRIORITY).toEqual(PATTERN_NAMES);
     expect(Object.keys(parsed.TRADING_PATTERNS)).toEqual(PATTERN_NAMES);
+  });
+
+  it("keeps a separate risk threshold for each pattern and direction", () => {
+    const pattern = patternDefinitionByName.get("DoubleTap")!;
+    const parsed = parseTradingPatternsConfig({
+      TRADING_PATTERNS: {
+        DoubleTap: {
+          LONG: { minRiskRatio: 1.55 },
+          SHORT: { minRiskRatio: 1.6 },
+        },
+      },
+    });
+    const child = buildChildConfig({ pattern, config: parsed }) as any;
+
+    expect(child.LONG.minRiskRatio).toBe(1.55);
+    expect(child.SHORT.minRiskRatio).toBe(1.6);
   });
 
   it("rejects any interval other than one hour", () => {

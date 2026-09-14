@@ -16,10 +16,15 @@ export interface TradingPatternsSideConfig {
   minRiskRatio: number;
 }
 
+export interface TradingPatternDirectionConfig {
+  enable: boolean;
+  minRiskRatio: number;
+}
+
 export interface TradingPatternToggle {
   enable: boolean;
-  LONG: boolean;
-  SHORT: boolean;
+  LONG: TradingPatternDirectionConfig;
+  SHORT: TradingPatternDirectionConfig;
 }
 
 export type TradingPatternToggles = Record<
@@ -84,15 +89,23 @@ const createPatternToggles = (): TradingPatternToggles =>
   Object.fromEntries(
     patternDefinitions.map(({ name, definition }) => {
       const defaults = definition.defaults as Record<string, unknown>;
-      const long = defaults.LONG as { enable?: unknown } | undefined;
-      const short = defaults.SHORT as { enable?: unknown } | undefined;
+      const long = defaults.LONG as
+        { enable?: unknown; minRiskRatio?: unknown } | undefined;
+      const short = defaults.SHORT as
+        { enable?: unknown; minRiskRatio?: unknown } | undefined;
 
       return [
         name,
         {
           enable: true,
-          LONG: long?.enable !== false,
-          SHORT: short?.enable !== false,
+          LONG: {
+            enable: long?.enable !== false,
+            minRiskRatio: Number(long?.minRiskRatio ?? 0.7),
+          },
+          SHORT: {
+            enable: short?.enable !== false,
+            minRiskRatio: Number(short?.minRiskRatio ?? 0.7),
+          },
         },
       ];
     }),
@@ -106,8 +119,14 @@ export const config: TradingPatternsConfig = {
   MIN_AI_QUALITY: patternDefaults.MIN_AI_QUALITY as number,
   TRADING_PATTERNS_PRIORITY: [...PATTERN_NAMES],
   TRADING_PATTERNS: createPatternToggles(),
-  LONG: cloneValue(referenceSides.LONG) as TradingPatternsSideConfig,
-  SHORT: cloneValue(referenceSides.SHORT) as TradingPatternsSideConfig,
+  LONG: {
+    ...(cloneValue(referenceSides.LONG) as TradingPatternsSideConfig),
+    minRiskRatio: 0,
+  },
+  SHORT: {
+    ...(cloneValue(referenceSides.SHORT) as TradingPatternsSideConfig),
+    minRiskRatio: 0,
+  },
 };
 
 const baseParseConfig = createCostIsolatedStrategyConfigParser({
@@ -190,7 +209,11 @@ const buildSideConfig = ({
   return {
     ...defaultSide,
     ...sharedSide,
-    enable: sharedSide.enable && toggle[direction],
+    enable: sharedSide.enable && toggle[direction].enable,
+    minRiskRatio: Math.max(
+      sharedSide.minRiskRatio,
+      toggle[direction].minRiskRatio,
+    ),
     direction,
   };
 };

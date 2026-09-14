@@ -65,8 +65,16 @@ their source packages are preserved. For example, the current
   TradingPatterns: {
     INTERVAL: "60",
     TRADING_PATTERNS: {
-      DoubleTap: { enable: true, LONG: true, SHORT: true },
-      Crab: { enable: true, LONG: true, SHORT: true }
+      DoubleTap: {
+        enable: true,
+        LONG: { enable: true, minRiskRatio: 1.55 },
+        SHORT: { enable: true, minRiskRatio: 1.6 }
+      },
+      Crab: {
+        enable: true,
+        LONG: { enable: true, minRiskRatio: 0.7 },
+        SHORT: { enable: true, minRiskRatio: 0.7 }
+      }
       // Other pattern entries are materialized from defaults.
     }
   }
@@ -77,6 +85,10 @@ Pattern-specific fields keep their existing names, such as
 `DOUBLETAP_PIVOT_LENGTH`, `BAT_XD_RETRACEMENT`, and
 `TRIANGLE_MIN_PATTERN_BARS`. They can be tuned in the same `TradingPatterns`
 config without changing the composition code.
+
+Top-level `LONG.enable` and `SHORT.enable` are master switches. Their
+`minRiskRatio` values are optional common floors; the default floor is `0`, so
+each pattern's own directional threshold remains authoritative.
 
 ## Development
 

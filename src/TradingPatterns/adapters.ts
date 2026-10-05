@@ -42,7 +42,7 @@ const getSourceAdapter = ({
 const shortReplacementGate = withStrategyLocalAiGate(
   {},
   {
-    id: "trading_patterns_short_near_support_070_nonbull_stack_2026_09_14",
+    id: "trading_patterns_short_D_protected_flag_economics_2026_10_05",
     approves: ({ signal, payload }) => {
       if (signal.direction !== "SHORT") return false;
 
@@ -54,12 +54,40 @@ const shortReplacementGate = withStrategyLocalAiGate(
         payload,
         "additionalIndicators.baseContext.regime.trend.maStackScore",
       );
+      const trailDistancePct = getAiPayloadNumber(
+        payload,
+        "additionalIndicators.baseContext.regime.trend.trendFollow.distanceToTrailStopPct",
+      );
+      const passesD =
+        (nearestSupportDistanceAtr != null &&
+          Number.isFinite(nearestSupportDistanceAtr) &&
+          nearestSupportDistanceAtr <= 0.7 &&
+          maStackScore != null &&
+          Number.isFinite(maStackScore) &&
+          maStackScore <= 0) ||
+        (trailDistancePct != null &&
+          Number.isFinite(trailDistancePct) &&
+          trailDistancePct >= -1.3);
+      if (!passesD) return false;
 
+      // Match the frozen research rule's payload source-pattern predicate.
+      if (getSelectedPattern(payload.additionalIndicators) !== "Flag")
+        return true;
+      const grossRiskRatio = getAiPayloadNumber(
+        payload,
+        "additionalIndicators.flagContext.executionEconomics.grossRiskRatio",
+      );
+      const priceDistanceToMaFastAtr = getAiPayloadNumber(
+        payload,
+        "additionalIndicators.baseContext.regime.trend.priceDistanceToMaFastAtr",
+      );
       return (
-        nearestSupportDistanceAtr != null &&
-        nearestSupportDistanceAtr <= 0.7 &&
-        maStackScore != null &&
-        maStackScore <= 0
+        (grossRiskRatio != null &&
+          Number.isFinite(grossRiskRatio) &&
+          grossRiskRatio > 3) ||
+        (priceDistanceToMaFastAtr != null &&
+          Number.isFinite(priceDistanceToMaFastAtr) &&
+          priceDistanceToMaFastAtr > 0.4)
       );
     },
   },

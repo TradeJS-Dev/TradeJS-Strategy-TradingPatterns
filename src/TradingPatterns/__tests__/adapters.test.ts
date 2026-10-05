@@ -51,6 +51,7 @@ describe("TradingPatterns AI adapter", () => {
           },
           regime: { trend: { maStackScore: 0 } },
         },
+        flagContext: { executionEconomics: { grossRiskRatio: 3.1 } },
       },
     } as unknown as AiPayload;
 
@@ -69,7 +70,7 @@ describe("TradingPatterns AI adapter", () => {
       }),
     );
     expect((result as any).qualityReason).toContain(
-      "trading_patterns_short_near_support_070_nonbull_stack_2026_09_14",
+      "trading_patterns_short_D_protected_flag_economics_2026_10_05",
     );
   });
 

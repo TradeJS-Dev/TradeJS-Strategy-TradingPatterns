@@ -1,6 +1,6 @@
 {
   "name": "@tradejs/strategy-trading-patterns",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "One-hour composite strategy evaluating Diamond, Flag, Gartley and HeadAndShoulders.",
   "type": "module",
   "packageManager": "yarn@4.13.0",

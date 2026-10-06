@@ -5,18 +5,10 @@ timeframe (`INTERVAL: "60"`).
 
 ## Included patterns
 
-- `DoubleTap`
-- `Crab`
-- `Bat`
-- `Triangle`
-- `CupAndHandle`
 - `Diamond`
-- `Dragon`
-- `FiveZero`
 - `Flag`
 - `Gartley`
 - `HeadAndShoulders`
-- `Shark`
 
 Every detector is evaluated on every candle so its replay state stays current.
 When several patterns signal on the same candle, `TRADING_PATTERNS_PRIORITY`
@@ -28,22 +20,19 @@ The package imports each detector through its public strategy package. Pattern
 geometry, risk plans, figures, and AI context therefore stay owned by their
 source packages instead of being copied into this repository.
 
+Disabled patterns and Bat were removed from the composition. Existing configs
+must remove their toggle entries, priority entries and pattern-specific fields.
+The parser rejects removed patterns rather than silently ignoring them.
+The standalone child packages are unchanged by this composition cleanup.
+
 ## Install
 
 ```bash
 yarn add @tradejs/strategy-trading-patterns \
-  @tradejs/strategy-double-tap \
-  @tradejs/strategy-crab \
-  @tradejs/strategy-bat \
-  @tradejs/strategy-triangle \
-  @tradejs/strategy-cup-and-handle \
   @tradejs/strategy-diamond \
-  @tradejs/strategy-dragon \
-  @tradejs/strategy-five-zero \
   @tradejs/strategy-flag \
   @tradejs/strategy-gartley \
-  @tradejs/strategy-head-and-shoulders \
-  @tradejs/strategy-shark
+  @tradejs/strategy-head-and-shoulders
 ```
 
 Register the package in `tradejs.config.ts`:
@@ -65,15 +54,15 @@ their source packages are preserved. For example, the current
   TradingPatterns: {
     INTERVAL: "60",
     TRADING_PATTERNS: {
-      DoubleTap: {
+      Diamond: {
         enable: true,
-        LONG: { enable: true, minRiskRatio: 1.55 },
-        SHORT: { enable: true, minRiskRatio: 1.6 }
+        LONG: { enable: true, minRiskRatio: 1.15 },
+        SHORT: { enable: true, minRiskRatio: 1.15 }
       },
-      Crab: {
+      Flag: {
         enable: true,
         LONG: { enable: true, minRiskRatio: 0.7 },
-        SHORT: { enable: true, minRiskRatio: 0.7 }
+        SHORT: { enable: true, minRiskRatio: 0.5 }
       }
       // Other pattern entries are materialized from defaults.
     }
@@ -82,8 +71,8 @@ their source packages are preserved. For example, the current
 ```
 
 Pattern-specific fields keep their existing names, such as
-`DOUBLETAP_PIVOT_LENGTH`, `BAT_XD_RETRACEMENT`, and
-`TRIANGLE_MIN_PATTERN_BARS`. They can be tuned in the same `TradingPatterns`
+`DIAMOND_PIVOT_LENGTH`, `FLAG_PIVOT_RADIUS`, and
+`GARTLEY_MIN_AD_RETRACEMENT_RATIO`. They can be tuned in the same `TradingPatterns`
 config without changing the composition code.
 
 Top-level `LONG.enable` and `SHORT.enable` are master switches. Their

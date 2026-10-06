@@ -8,6 +8,60 @@ import {
 import { PATTERN_NAMES, patternDefinitionByName } from "../patterns";
 
 describe("TradingPatterns config", () => {
+  it("keeps only the four selected detectors in their original relative order", () => {
+    expect(PATTERN_NAMES).toEqual([
+      "Diamond",
+      "Flag",
+      "Gartley",
+      "HeadAndShoulders",
+    ]);
+    expect([...patternDefinitionByName.keys()]).toEqual(PATTERN_NAMES);
+  });
+
+  it.each([
+    "Bat",
+    "Crab",
+    "CupAndHandle",
+    "DoubleTap",
+    "Dragon",
+    "FiveZero",
+    "Shark",
+    "Triangle",
+  ])(
+    "rejects removed pattern %s rather than silently accepting its switch",
+    (name) => {
+      expect(() =>
+        parseTradingPatternsConfig({
+          TRADING_PATTERNS: { [name]: { enable: true } },
+        }),
+      ).toThrow();
+      expect(() =>
+        parseTradingPatternsConfig({
+          TRADING_PATTERNS_PRIORITY: [...PATTERN_NAMES, name],
+        }),
+      ).toThrow();
+    },
+  );
+
+  it("combines master switches and per-child floors without changing another child", () => {
+    const parsed = parseTradingPatternsConfig({
+      LONG: { enable: false },
+      SHORT: { minRiskRatio: 1 },
+      TRADING_PATTERNS: { Flag: { SHORT: { minRiskRatio: 1.6 } } },
+    });
+    const flag = buildChildConfig({
+      pattern: patternDefinitionByName.get("Flag")!,
+      config: parsed,
+    });
+    const gartley = buildChildConfig({
+      pattern: patternDefinitionByName.get("Gartley")!,
+      config: parsed,
+    });
+    expect(flag.LONG.enable).toBe(false);
+    expect(flag.SHORT.minRiskRatio).toBe(1.6);
+    expect(gartley.SHORT.minRiskRatio).toBe(1);
+    expect(config.LONG.enable).toBe(true);
+  });
   it("defaults to one hour and includes every supported pattern", () => {
     const parsed = parseTradingPatternsConfig({});
 
@@ -18,10 +72,10 @@ describe("TradingPatterns config", () => {
   });
 
   it("keeps a separate risk threshold for each pattern and direction", () => {
-    const pattern = patternDefinitionByName.get("DoubleTap")!;
+    const pattern = patternDefinitionByName.get("Diamond")!;
     const parsed = parseTradingPatternsConfig({
       TRADING_PATTERNS: {
-        DoubleTap: {
+        Diamond: {
           LONG: { minRiskRatio: 1.55 },
           SHORT: { minRiskRatio: 1.6 },
         },
@@ -57,7 +111,7 @@ describe("TradingPatterns config", () => {
           ...PATTERN_NAMES.slice(2),
         ],
       }),
-    ).toThrow("duplicate pattern DoubleTap");
+    ).toThrow("duplicate pattern Diamond");
   });
 
   it("requires at least one enabled detector", () => {

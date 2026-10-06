@@ -42,6 +42,20 @@ describe("strategy config contract", () => {
 
     expect(runtimeDependencies).toEqual([]);
     expect(
+      developmentRuntimePackages
+        .filter(
+          (name) =>
+            name.startsWith("@tradejs/strategy-") &&
+            name !== "@tradejs/strategy-kit",
+        )
+        .sort(),
+    ).toEqual([
+      "@tradejs/strategy-diamond",
+      "@tradejs/strategy-flag",
+      "@tradejs/strategy-gartley",
+      "@tradejs/strategy-head-and-shoulders",
+    ]);
+    expect(
       developmentRuntimePackages.every((name) =>
         Object.hasOwn(manifest.peerDependencies ?? {}, name),
       ),

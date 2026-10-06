@@ -91,7 +91,7 @@ describe("selected frozen SHORT gate", () => {
     expect(evaluate({ trail: -1.3, rr: null, fast: 0.5 })?.approved).toBe(true);
     expect(evaluate({ trail: -1.3, rr: 4, fast: NaN })?.approved).toBe(true);
   });
-  it.each(["Bat", "Diamond", "Gartley", "HeadAndShoulders"])(
+  it.each(["Diamond", "Gartley", "HeadAndShoulders"])(
     "does not apply Flag-only protection to %s",
     (pattern) => {
       expect(evaluate({ trail: -1.3, pattern })?.approved).toBe(true);
@@ -113,7 +113,15 @@ describe("selected frozen SHORT gate", () => {
   });
   it("delegates LONG to its existing child gate", () => {
     expect(
-      evaluate({ pattern: "Bat", direction: "LONG", trail: -1.3, rr: 4 }),
-    ).toEqual({ direction: null, quality: 3 });
+      evaluate({ pattern: "Diamond", direction: "LONG", trail: -1.3, rr: 4 }),
+    ).toEqual(
+      expect.objectContaining({
+        direction: null,
+        quality: 3,
+        qualityReason: expect.stringContaining(
+          "diamond_h1_psar_take_profit_directional_gate",
+        ),
+      }),
+    );
   });
 });

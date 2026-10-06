@@ -1086,39 +1086,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tradejs/strategy-bat@npm:^0.1.1":
-  version: 0.1.2
-  resolution: "@tradejs/strategy-bat@npm:0.1.2"
-  peerDependencies:
-    "@tradejs/core": ^3.0.1
-    "@tradejs/strategy-kit": ^3.0.5
-    "@tradejs/types": ^3.0.1
-  checksum: 10c0/0750493d2d4dda7ed50b84b5df5ad7edf2479693b5980b04d35c0c61451623acf0f0b887aa5cdb269e271308bb906bf97b6c61f79fb3cdb24754fc3f4227336b
-  languageName: node
-  linkType: hard
-
-"@tradejs/strategy-crab@npm:^0.1.1":
-  version: 0.1.1
-  resolution: "@tradejs/strategy-crab@npm:0.1.1"
-  peerDependencies:
-    "@tradejs/core": ^3.0.1
-    "@tradejs/strategy-kit": ^3.0.5
-    "@tradejs/types": ^3.0.1
-  checksum: 10c0/b92c29acf16c85be9b8df45ab0b380a541ad81cf6b1f48f9bcbc5ed2768d702766b1012409bfcf49eadfddb3ad8aabead9b088531e360d9280064d2129767aad
-  languageName: node
-  linkType: hard
-
-"@tradejs/strategy-cup-and-handle@npm:^3.0.4":
-  version: 3.0.6
-  resolution: "@tradejs/strategy-cup-and-handle@npm:3.0.6"
-  peerDependencies:
-    "@tradejs/core": ^3.0.1
-    "@tradejs/strategy-kit": ^3.0.5
-    "@tradejs/types": ^3.0.1
-  checksum: 10c0/3cf5848f1be8809bc0efa96f28c06cb2ee783f0d07fac42d1e3b65ef703f2102468e9c83fa4a71b1b5f4b23e7d38c13c73a238db1ac36c8241988bbbee8203a3
-  languageName: node
-  linkType: hard
-
 "@tradejs/strategy-diamond@npm:^0.1.1":
   version: 0.1.2
   resolution: "@tradejs/strategy-diamond@npm:0.1.2"
@@ -1130,47 +1097,14 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tradejs/strategy-double-tap@npm:^3.0.3":
-  version: 3.0.5
-  resolution: "@tradejs/strategy-double-tap@npm:3.0.5"
+"@tradejs/strategy-flag@npm:^0.1.6":
+  version: 0.1.6
+  resolution: "@tradejs/strategy-flag@npm:0.1.6"
   peerDependencies:
     "@tradejs/core": ^3.0.1
     "@tradejs/strategy-kit": ^3.0.5
     "@tradejs/types": ^3.0.1
-  checksum: 10c0/cc3fcdd65089311687eabc34749ab902fe246dab34e77ffcd4fa340fce7ca9dbadf20aad8c8b5f5192ae0c596ec72e2d47901edc74fd6d891ca33ccdd7dc2fff
-  languageName: node
-  linkType: hard
-
-"@tradejs/strategy-dragon@npm:^0.1.1":
-  version: 0.1.3
-  resolution: "@tradejs/strategy-dragon@npm:0.1.3"
-  peerDependencies:
-    "@tradejs/core": ^3.0.1
-    "@tradejs/strategy-kit": ^3.0.5
-    "@tradejs/types": ^3.0.1
-  checksum: 10c0/a356595e06399d00c85928c2901322c8896884472f6241e4b5fcb73b53433880ee06cc1b82ad373da677bcf14039dcdfd9271fcb5748081c73e46824e1dd896b
-  languageName: node
-  linkType: hard
-
-"@tradejs/strategy-five-zero@npm:^0.1.1":
-  version: 0.1.2
-  resolution: "@tradejs/strategy-five-zero@npm:0.1.2"
-  peerDependencies:
-    "@tradejs/core": ^3.0.1
-    "@tradejs/strategy-kit": ^3.0.5
-    "@tradejs/types": ^3.0.1
-  checksum: 10c0/522a4107f2b7ee1f7bcd21b7f42835dc818a594d5cd67b9b22b476d0e54f46d9b0945f2f3c25617f78601c1b6c77b45634fb77e084ba4c4946d102640f460905
-  languageName: node
-  linkType: hard
-
-"@tradejs/strategy-flag@npm:^0.1.3":
-  version: 0.1.4
-  resolution: "@tradejs/strategy-flag@npm:0.1.4"
-  peerDependencies:
-    "@tradejs/core": ^3.0.1
-    "@tradejs/strategy-kit": ^3.0.5
-    "@tradejs/types": ^3.0.1
-  checksum: 10c0/da40bac7a82a75b0e7e5f93a4b463d58bf778995eda0a4740bb3b7e8ea4d4c5de747941532c9a8d312fb0ff71b039eac0a8012240e365adc1bf56b5f6b4e4e47
+  checksum: 10c0/e10bcdae72c07eb20e991a563de040a7e6635e94f150bae9ea1bfa6406251116469f130a92e527c2808f61e4ab111682cbef2df0e1f79889f488c495dab775eb
   languageName: node
   linkType: hard
 
@@ -1206,35 +1140,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tradejs/strategy-shark@npm:^0.1.1":
-  version: 0.1.2
-  resolution: "@tradejs/strategy-shark@npm:0.1.2"
-  peerDependencies:
-    "@tradejs/core": ^3.0.1
-    "@tradejs/strategy-kit": ^3.0.5
-    "@tradejs/types": ^3.0.1
-  checksum: 10c0/821d50bb10807c1aba4b22ab54cdcb0ccc1a36f331130d84f07a9ba46f228dc354346d8b07b2e4b21e8d8ed726c0f5c4d79df07b4b14c9bc005e606b2f56a0c9
-  languageName: node
-  linkType: hard
-
 "@tradejs/strategy-trading-patterns@workspace:.":
   version: 0.0.0-use.local
   resolution: "@tradejs/strategy-trading-patterns@workspace:."
   dependencies:
     "@tradejs/core": "npm:^3.0.1"
-    "@tradejs/strategy-bat": "npm:^0.1.1"
-    "@tradejs/strategy-crab": "npm:^0.1.1"
-    "@tradejs/strategy-cup-and-handle": "npm:^3.0.4"
     "@tradejs/strategy-diamond": "npm:^0.1.1"
-    "@tradejs/strategy-double-tap": "npm:^3.0.3"
-    "@tradejs/strategy-dragon": "npm:^0.1.1"
-    "@tradejs/strategy-five-zero": "npm:^0.1.1"
-    "@tradejs/strategy-flag": "npm:^0.1.3"
+    "@tradejs/strategy-flag": "npm:^0.1.6"
     "@tradejs/strategy-gartley": "npm:^0.1.1"
     "@tradejs/strategy-head-and-shoulders": "npm:^3.0.5"
     "@tradejs/strategy-kit": "npm:^3.0.5"
-    "@tradejs/strategy-shark": "npm:^0.1.1"
-    "@tradejs/strategy-triangle": "npm:^0.1.0"
     "@tradejs/types": "npm:^3.0.1"
     "@types/jest": "npm:^29.5.14"
     jest: "npm:^29.7.0"
@@ -1244,33 +1159,14 @@ __metadata:
     typescript: "npm:^5.9.2"
   peerDependencies:
     "@tradejs/core": ^3.0.1
-    "@tradejs/strategy-bat": ^0.1.1
-    "@tradejs/strategy-crab": ^0.1.1
-    "@tradejs/strategy-cup-and-handle": ^3.0.4
     "@tradejs/strategy-diamond": ^0.1.1
-    "@tradejs/strategy-double-tap": ^3.0.3
-    "@tradejs/strategy-dragon": ^0.1.1
-    "@tradejs/strategy-five-zero": ^0.1.1
-    "@tradejs/strategy-flag": ^0.1.3
+    "@tradejs/strategy-flag": ^0.1.6
     "@tradejs/strategy-gartley": ^0.1.1
     "@tradejs/strategy-head-and-shoulders": ^3.0.5
     "@tradejs/strategy-kit": ^3.0.5
-    "@tradejs/strategy-shark": ^0.1.1
-    "@tradejs/strategy-triangle": ^0.1.0
     "@tradejs/types": ^3.0.1
   languageName: unknown
   linkType: soft
-
-"@tradejs/strategy-triangle@npm:^0.1.0":
-  version: 0.1.1
-  resolution: "@tradejs/strategy-triangle@npm:0.1.1"
-  peerDependencies:
-    "@tradejs/core": ^3.0.1
-    "@tradejs/strategy-kit": ^3.0.5
-    "@tradejs/types": ^3.0.1
-  checksum: 10c0/3c79eb1d95c371cdb68365661c47fd5ba4aa7575a8ec6ce4f9e411afba764e32c8ce5de6b1fba3ee0bdbaa9dabda65afc5d8dcf7ea5e32352ac1b5caced55b3f
-  languageName: node
-  linkType: hard
 
 "@tradejs/types@npm:^3.0.1, @tradejs/types@npm:^3.1.27":
   version: 3.1.27

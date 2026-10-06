@@ -3,18 +3,10 @@ import { writeFile } from "node:fs/promises";
 import { createInterface } from "node:readline";
 
 const patterns = {
-  DoubleTap: { contextKey: "doubleTapContext", pivots: 4 },
-  Crab: { contextKey: "crabContext", pivots: 5 },
-  Bat: { contextKey: "batContext", pivots: 5 },
-  Triangle: { contextKey: "triangleContext", boundaryPivots: true },
-  CupAndHandle: { contextKey: "cupAndHandleContext", pivots: 4 },
   Diamond: { contextKey: "diamondContext", pivots: 6 },
-  Dragon: { contextKey: "dragonContext", pivots: 4 },
-  FiveZero: { contextKey: "fiveZeroContext", pivots: 5 },
   Flag: { contextKey: "flagContext", boundaryPivots: true, pole: true },
   Gartley: { contextKey: "gartleyContext", pivots: 5 },
   HeadAndShoulders: { contextKey: "headAndShouldersContext", pivots: 5 },
-  Shark: { contextKey: "sharkContext", pivots: 5 },
 };
 
 const args = process.argv.slice(2);

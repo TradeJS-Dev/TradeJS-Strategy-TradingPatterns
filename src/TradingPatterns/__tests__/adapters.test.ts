@@ -1,5 +1,6 @@
 import type { AiPayload, Signal } from "@tradejs/types";
 import { tradingPatternsAiAdapter } from "../adapters";
+import { DiamondStrategyDefinition } from "@tradejs/strategy-diamond";
 
 describe("TradingPatterns AI adapter", () => {
   it("delegates interpretation context to the selected pattern adapter", () => {
@@ -7,10 +8,10 @@ describe("TradingPatterns AI adapter", () => {
       strategy: "TradingPatterns",
       additionalIndicators: {
         tradingPatternsContext: {
-          selectedPattern: "Bat",
-          sourceCode: "BAT_BULLISH_D_CONFIRMED",
+          selectedPattern: "Diamond",
+          sourceCode: "DIAMOND_BULLISH_CONFIRMED",
         },
-        batContext: { patternKind: "bullish_bat" },
+        diamondContext: { patternKind: "bullish_diamond" },
       },
     } as unknown as Signal;
     const payload = {
@@ -23,9 +24,9 @@ describe("TradingPatterns AI adapter", () => {
       payload,
     });
 
-    expect(addon).toContain("selectedPattern=Bat");
-    expect(addon).toContain("Additional Bat context");
-    expect(addon).toContain("patternKind=bullish_bat");
+    expect(addon).toContain("selectedPattern=Diamond");
+    expect(addon).toContain("Additional Diamond context");
+    expect(addon).toContain("patternKind=bullish_diamond");
   });
 
   it("approves a SHORT near support in a non-bullish MA stack", () => {
@@ -121,7 +122,7 @@ describe("TradingPatterns AI adapter", () => {
         stopLossPrice: 95,
       },
       additionalIndicators: {
-        tradingPatternsContext: { selectedPattern: "Bat" },
+        tradingPatternsContext: { selectedPattern: "Diamond" },
       },
     } as unknown as Signal;
     const payload = {
@@ -140,6 +141,12 @@ describe("TradingPatterns AI adapter", () => {
       analysis,
     });
 
-    expect(result).toEqual(analysis);
+    expect(result).toEqual(
+      DiamondStrategyDefinition.manifest.aiAdapter?.postProcessLocalAnalysis?.({
+        signal,
+        payload,
+        analysis,
+      }),
+    );
   });
 });

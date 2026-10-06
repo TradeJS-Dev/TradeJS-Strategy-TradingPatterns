@@ -33,12 +33,14 @@ const makeDefinition = ({
   events,
   enter = true,
   exit = true,
+  protect = false,
 }: {
   name: TradingPatternName;
   code: string;
   events: string[];
   enter?: boolean;
   exit?: boolean;
+  protect?: boolean;
 }): TradingPatternDefinition => {
   const defaults: StrategyConfig = {
     INTERVAL: "15",
@@ -56,6 +58,11 @@ const makeDefinition = ({
         events.push(`${name}:${candle.timestamp}`);
         const position = await strategyApi.getCurrentPosition();
         if (position) {
+          if (protect)
+            return strategyApi.protect({
+              code: `${code}_PROTECT`,
+              protectPlan: { stopLossPrice: 99 },
+            } as any);
           return exit
             ? strategyApi.exit({
                 code: `${code}_EXIT`,
@@ -171,6 +178,67 @@ const candle = {
 } as any;
 
 describe("TradingPatterns core", () => {
+  it("uses configured priority rather than the injected catalog order", async () => {
+    const events: string[] = [];
+    const { api, committedTrades } = makeStrategyApi();
+    const core = await createTradingPatternsCoreWithDefinitions([
+      makeDefinition({ name: "Diamond", code: "DIAMOND", events }),
+      makeDefinition({ name: "Flag", code: "FLAG", events }),
+    ])({
+      config: {
+        ...makeConfig(["Diamond", "Flag"]),
+        TRADING_PATTERNS_PRIORITY: [
+          "Flag",
+          "Diamond",
+          "Gartley",
+          "HeadAndShoulders",
+        ],
+      },
+      data: [],
+      strategyApi: api,
+      indicatorsState,
+    });
+    expect(await core(candle, candle)).toMatchObject({
+      code: "TRADING_PATTERNS_FLAG_FLAG_ENTRY",
+    });
+    expect(events).toEqual(["Flag:1", "Diamond:1"]);
+    expect(committedTrades).toEqual([1]);
+  });
+
+  it("forwards owner protection and keeps ownership on the next candle", async () => {
+    const events: string[] = [];
+    const runtime = makeStrategyApi();
+    const core = await createTradingPatternsCoreWithDefinitions([
+      makeDefinition({
+        name: "Diamond",
+        code: "DIAMOND",
+        events,
+        protect: true,
+      }),
+      makeDefinition({ name: "Flag", code: "FLAG", events }),
+    ])({
+      config: makeConfig(["Diamond", "Flag"]),
+      data: [],
+      strategyApi: runtime.api,
+      indicatorsState,
+    });
+    await core(candle, candle);
+    runtime.setPosition({
+      symbol: "TESTUSDT",
+      qty: 1,
+      price: 100,
+      direction: "LONG",
+    });
+    for (const timestamp of [2, 3])
+      expect(await core({ ...candle, timestamp }, candle)).toMatchObject({
+        code: "TRADING_PATTERNS_DIAMOND_DIAMOND_PROTECT",
+      });
+    expect(runtime.api.protect).toHaveBeenCalledTimes(2);
+    expect(runtime.api.exit).not.toHaveBeenCalled();
+    expect(runtime.api.entry).toHaveBeenCalledTimes(1);
+    expect(runtime.committedTrades).toEqual([1]);
+    expect(events).toHaveLength(6);
+  });
   it("initializes every real pattern package in one runtime", async () => {
     const { api } = makeStrategyApi();
     const core = await createTradingPatternsCore({
@@ -186,18 +254,18 @@ describe("TradingPatterns core", () => {
       kind: "skip",
       code: "TRADING_PATTERNS_NO_PATTERN",
     });
-    expect(api.createLastTradeController).toHaveBeenCalledTimes(12);
+    expect(api.createLastTradeController).toHaveBeenCalledTimes(4);
   });
 
   it("updates every detector but emits only the highest-priority entry", async () => {
     const events: string[] = [];
     const definitions = [
-      makeDefinition({ name: "DoubleTap", code: "DOUBLE_TAP", events }),
-      makeDefinition({ name: "Crab", code: "CRAB", events }),
+      makeDefinition({ name: "Diamond", code: "DIAMOND", events }),
+      makeDefinition({ name: "Flag", code: "FLAG", events }),
     ];
     const { api, committedTrades } = makeStrategyApi();
     const core = await createTradingPatternsCoreWithDefinitions(definitions)({
-      config: makeConfig(["DoubleTap", "Crab"]),
+      config: makeConfig(["Diamond", "Flag"]),
       data: [],
       strategyApi: api,
       indicatorsState,
@@ -205,17 +273,17 @@ describe("TradingPatterns core", () => {
 
     const decision = await core(candle, candle);
 
-    expect(events).toEqual(["DoubleTap:1", "Crab:1"]);
+    expect(events).toEqual(["Diamond:1", "Flag:1"]);
     expect(decision).toMatchObject({
       kind: "entry",
-      code: "TRADING_PATTERNS_DOUBLE_TAP_DOUBLE_TAP_ENTRY",
+      code: "TRADING_PATTERNS_DIAMOND_DIAMOND_ENTRY",
     });
     expect((api.entry as jest.Mock).mock.calls[0][0]).toMatchObject({
       additionalIndicators: {
-        DoubleTapContext: { detected: true },
+        DiamondContext: { detected: true },
         tradingPatternsContext: {
-          selectedPattern: "DoubleTap",
-          sourceCode: "DOUBLE_TAP_ENTRY",
+          selectedPattern: "Diamond",
+          sourceCode: "DIAMOND_ENTRY",
         },
       },
     });
@@ -226,12 +294,12 @@ describe("TradingPatterns core", () => {
   it("lets only the pattern that opened the position issue an early exit", async () => {
     const events: string[] = [];
     const definitions = [
-      makeDefinition({ name: "DoubleTap", code: "DOUBLE_TAP", events }),
-      makeDefinition({ name: "Crab", code: "CRAB", events }),
+      makeDefinition({ name: "Diamond", code: "DIAMOND", events }),
+      makeDefinition({ name: "Flag", code: "FLAG", events }),
     ];
     const runtime = makeStrategyApi();
     const core = await createTradingPatternsCoreWithDefinitions(definitions)({
-      config: makeConfig(["DoubleTap", "Crab"]),
+      config: makeConfig(["Diamond", "Flag"]),
       data: [],
       strategyApi: runtime.api,
       indicatorsState,
@@ -248,7 +316,7 @@ describe("TradingPatterns core", () => {
 
     expect(exitDecision).toMatchObject({
       kind: "exit",
-      code: "TRADING_PATTERNS_DOUBLE_TAP_DOUBLE_TAP_EXIT",
+      code: "TRADING_PATTERNS_DIAMOND_DIAMOND_EXIT",
     });
     expect(runtime.api.exit).toHaveBeenCalledTimes(1);
     expect(runtime.committedTrades).toEqual([1]);
@@ -257,12 +325,12 @@ describe("TradingPatterns core", () => {
   it("does not initialize disabled pattern runtimes", async () => {
     const events: string[] = [];
     const definitions = [
-      makeDefinition({ name: "DoubleTap", code: "DOUBLE_TAP", events }),
-      makeDefinition({ name: "Crab", code: "CRAB", events }),
+      makeDefinition({ name: "Diamond", code: "DIAMOND", events }),
+      makeDefinition({ name: "Flag", code: "FLAG", events }),
     ];
     const { api } = makeStrategyApi();
     const core = await createTradingPatternsCoreWithDefinitions(definitions)({
-      config: makeConfig(["Crab"]),
+      config: makeConfig(["Flag"]),
       data: [],
       strategyApi: api,
       indicatorsState,
@@ -270,10 +338,10 @@ describe("TradingPatterns core", () => {
 
     const decision = await core(candle, candle);
 
-    expect(events).toEqual(["Crab:1"]);
+    expect(events).toEqual(["Flag:1"]);
     expect(decision).toMatchObject({
       kind: "entry",
-      code: "TRADING_PATTERNS_CRAB_CRAB_ENTRY",
+      code: "TRADING_PATTERNS_FLAG_FLAG_ENTRY",
     });
   });
 });

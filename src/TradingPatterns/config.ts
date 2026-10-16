@@ -33,7 +33,7 @@ export type TradingPatternToggles = Record<
 >;
 
 export interface TradingPatternsConfig extends StrategyConfig {
-  INTERVAL: "60";
+  INTERVAL: "15" | "60";
   AI_ENABLED: boolean;
   AI_MODE: "gate" | "llm";
   MIN_AI_QUALITY: number;
@@ -172,8 +172,8 @@ export const parseTradingPatternsConfig = (
   const parsed = baseParseConfig(input);
   const issues = validatePriority(parsed.TRADING_PATTERNS_PRIORITY);
 
-  if (parsed.INTERVAL !== "60") {
-    issues.push("TradingPatterns.INTERVAL must be 60 (1h)");
+  if (parsed.INTERVAL !== "15" && parsed.INTERVAL !== "60") {
+    issues.push("TradingPatterns.INTERVAL must be 15 (15m) or 60 (1h)");
   }
 
   if (
@@ -228,7 +228,7 @@ export const buildChildConfig = ({
   const toggle = tradingPatternsConfig.TRADING_PATTERNS[pattern.name];
   const input = Object.fromEntries(
     Object.keys(pattern.definition.defaults).map((key) => {
-      if (key === "INTERVAL") return [key, "60"];
+      if (key === "INTERVAL") return [key, tradingPatternsConfig.INTERVAL];
       if (key === "LONG") {
         return [
           key,

@@ -1,7 +1,8 @@
 # @tradejs/strategy-trading-patterns
 
-TradeJS strategy plugin providing `TradingPatterns` on the fixed `1h`
-timeframe (`INTERVAL: "60"`).
+TradeJS strategy plugin providing `TradingPatterns` on the `15m` and `1h`
+timeframes (`INTERVAL: "15" | "60"`), with `60` as the default. Geometry is
+expressed in candles, so changing the interval changes each pattern's duration.
 
 ## Included patterns
 

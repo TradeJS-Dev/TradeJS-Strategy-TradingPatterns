@@ -87,9 +87,20 @@ describe("TradingPatterns config", () => {
     expect(child.SHORT.minRiskRatio).toBe(1.6);
   });
 
-  it("rejects any interval other than one hour", () => {
-    expect(() => parseTradingPatternsConfig({ INTERVAL: "15" })).toThrow(
-      "TradingPatterns.INTERVAL must be 60 (1h)",
+  it.each(["15", "60"])("supports interval %s", (interval) => {
+    const parsed = parseTradingPatternsConfig({ INTERVAL: interval });
+
+    expect(parsed.INTERVAL).toBe(interval);
+    for (const pattern of patternDefinitionByName.values()) {
+      expect(buildChildConfig({ pattern, config: parsed }).INTERVAL).toBe(
+        interval,
+      );
+    }
+  });
+
+  it("rejects unsupported intervals", () => {
+    expect(() => parseTradingPatternsConfig({ INTERVAL: "5" })).toThrow(
+      "TradingPatterns.INTERVAL must be 15 (15m) or 60 (1h)",
     );
   });
 

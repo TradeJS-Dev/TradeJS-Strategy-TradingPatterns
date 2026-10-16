@@ -18,7 +18,7 @@ These rules apply to this complete strategy repository.
 
 ## Ownership
 
-This repository owns the `TradingPatterns` one-hour composition policy. The
+This repository owns the `TradingPatterns` 15-minute and one-hour composition policy. The
 individual strategy packages continue to own their detector mechanics, risk
 plans, figures, and pattern-specific AI context.
 
@@ -33,7 +33,8 @@ plans, figures, and pattern-specific AI context.
 - Track which child opened the position and let only that child issue an early
   exit or protection decision. Exchange stop-loss and take-profit handling
   remains unchanged.
-- Keep `INTERVAL` fixed at `60`.
+- Support only the explicit `INTERVAL` values `15` and `60`; keep `60` as the
+  default and pass the selected interval to every child strategy.
 - Keep StrategyAPI side effects in `core.ts`.
 
 ## Verification

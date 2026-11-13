@@ -32,9 +32,11 @@
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "files": [
+    "launch-reports",
     "dist"
   ],
   "exports": {
+    "./launch-reports/*.json": "./launch-reports/*.json",
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",

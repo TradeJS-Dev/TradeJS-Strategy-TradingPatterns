@@ -1,0 +1,24 @@
+{
+  "schema": "tradejs-launch-report/v1",
+  "strategy": "TradingPatterns",
+  "candidate": "E · late entry with own short gate",
+  "sourceSha256": "81b13704793ff180d4751305281e588ae03ca318f22b6369ecab547c01549ef2",
+  "metrics": {
+    "trades": 245,
+    "pnl": 570.4538144733556,
+    "maxDrawdown": 68.25847549236641,
+    "maxLossStreak": 6,
+    "profitFactor": 1.5432893471174816,
+    "winRatePercent": 57.14285714285714,
+    "maxDrawdownDurationDays": 197.08333333333334
+  },
+  "researchRiskUsdt": 10,
+  "period": {
+    "start": 1604494800000,
+    "end": 1788804000000
+  },
+  "chart": {
+    "caption": "Historical cumulative P&L and drawdown from peak, in USDT.",
+    "sha256": "e23cf518e1d0076713e6d7be329a8f32f270dce2cdaf4cd28dd354129a7b655f"
+  }
+}
